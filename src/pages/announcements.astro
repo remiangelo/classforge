@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getCollection, CollectionEntry } from "astro:content";
+const announcements = await getCollection("announcements");
+---
+
+<Layout>
+  <main class="flex flex-col items-center justify-center min-h-screen">
+    <h1 class="text-2xl font-bold mb-4">Announcements</h1>
+    <ul class="w-full max-w-lg space-y-4">
+      {
+        announcements.length === 0 && (
+          <li class="text-gray-500">No announcements yet.</li>
+        )
+      }
+      {
+        (announcements as CollectionEntry<"announcements">[]).map((a) => {
+          return (
+            <li class="p-4 bg-white rounded shadow">
+              <h2 class="font-semibold">{a.data.title}</h2>
+              <p class="text-xs text-gray-400">{a.data.date}</p>
+              <div class="mt-2">{a.body}</div>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </main>
+</Layout>

@@ -1,11 +1,201 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import TestButton from "../components/TestButton.jsx";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
-	<Welcome />
+  <main
+    class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white"
+  >
+    <header
+      class="navbar bg-base-100 shadow-md rounded-xl mt-6 mb-8 w-full max-w-6xl"
+    >
+      <div class="flex-1 flex items-center gap-2">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 32 32"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          ><rect width="32" height="32" rx="16" fill="#111"></rect><path
+            d="M8 24L16 8L24 24H8Z"
+            fill="white"></path></svg
+        >
+        <span class="font-bold text-xl tracking-tight">ClassForge</span>
+      </div>
+      <div class="flex-none hidden md:flex gap-2">
+        <a href="/login" class="btn btn-ghost rounded-btn">Login</a>
+        <a href="/announcements" class="btn btn-ghost rounded-btn"
+          >Announcements</a
+        >
+        <a href="/dashboard" class="btn btn-ghost rounded-btn">Dashboard</a>
+      </div>
+      <div class="flex-none md:hidden">
+        <a href="/login" class="btn btn-ghost rounded-btn">Menu</a>
+      </div>
+    </header>
+    <section
+      class="flex flex-col items-center justify-center flex-1 text-center px-4"
+    >
+      <h1
+        class="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+      >
+        Modern School Management, Reimagined
+      </h1>
+      <p class="text-lg md:text-2xl text-base-content/70 mb-8 max-w-2xl">
+        ClassForge is the next-generation platform for schools, teachers,
+        students, and parents. Manage classes, grades, attendance, and more—all
+        in one beautiful, fast, and secure place.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button asChild size="lg" className="btn btn-primary">
+          <a href="/login">Get Started</a>
+        </Button>
+        <Button asChild variant="outline" size="lg" className="btn btn-outline">
+          <a href="/announcements">View Announcements</a>
+        </Button>
+      </div>
+    </section>
+    <!-- Features Section -->
+    <section
+      class="w-full max-w-6xl mx-auto py-16 px-6 grid grid-cols-1 md:grid-cols-3 gap-8"
+    >
+      <Card>
+        <CardHeader>
+          <CardTitle>Attendance Tracking</CardTitle>
+          <CardDescription
+            >Easily track student attendance and spot trends at a glance.</CardDescription
+          >
+        </CardHeader>
+        <CardContent>
+          <svg
+            class="mb-4 mx-auto"
+            width="40"
+            height="40"
+            fill="none"
+            viewBox="0 0 24 24"
+            ><path
+              fill="currentColor"
+              d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+            ></path></svg
+          >
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Gradebook</CardTitle>
+          <CardDescription
+            >Manage grades, assignments, and feedback in one place.</CardDescription
+          >
+        </CardHeader>
+        <CardContent>
+          <svg
+            class="mb-4 mx-auto"
+            width="40"
+            height="40"
+            fill="none"
+            viewBox="0 0 24 24"
+            ><path
+              fill="currentColor"
+              d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 15h2v-2h-2v2zm0-4h2V7h-2v6z"
+            ></path></svg
+          >
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Parent Portal</CardTitle>
+          <CardDescription
+            >Keep parents in the loop with real-time updates and messaging.</CardDescription
+          >
+        </CardHeader>
+        <CardContent>
+          <svg
+            class="mb-4 mx-auto"
+            width="40"
+            height="40"
+            fill="none"
+            viewBox="0 0 24 24"
+            ><path
+              fill="currentColor"
+              d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+            ></path></svg
+          >
+        </CardContent>
+      </Card>
+    </section>
+    <!-- React Test Button -->
+    <div class="my-8 flex justify-center">
+      <TestButton client:load />
+    </div>
+    <footer
+      class="w-full max-w-6xl mx-auto py-8 px-6 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm mt-12"
+    >
+      <span
+        >&copy; {new Date().getFullYear()} ClassForge. All rights reserved.</span
+      >
+      <span>Made with Astro & TailwindCSS</span>
+      <!-- Theme Toggle -->
+      <button
+        id="theme-toggle"
+        class="ml-4 px-3 py-1 rounded border border-gray-500 bg-gray-800 text-gray-200 hover:bg-gray-700 transition"
+        aria-label="Toggle theme"
+        type="button"
+      >
+        <span id="theme-toggle-label">System</span>
+      </button>
+      <script is:inline>
+        // Simple theme toggle logic
+        const btn = document.getElementById("theme-toggle");
+        const label = document.getElementById("theme-toggle-label");
+        const themes = ["system", "light", "dark"];
+        let idx = 0;
+        function setTheme(theme) {
+          if (theme === "system") {
+            localStorage.removeItem("theme");
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+              document.documentElement.classList.add("dark");
+              document.documentElement.classList.remove("light");
+            } else {
+              document.documentElement.classList.remove("dark");
+              document.documentElement.classList.add("light");
+            }
+          } else {
+            localStorage.setItem("theme", theme);
+            document.documentElement.classList.remove("light", "dark");
+            document.documentElement.classList.add(theme);
+          }
+          label.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+        }
+        function getInitialTheme() {
+          const stored = localStorage.getItem("theme");
+          if (stored === "light" || stored === "dark") return stored;
+          return "system";
+        }
+        idx = themes.indexOf(getInitialTheme());
+        setTheme(themes[idx]);
+        btn.addEventListener("click", () => {
+          idx = (idx + 1) % themes.length;
+          setTheme(themes[idx]);
+        });
+        // Listen for system theme changes
+        window
+          .matchMedia("(prefers-color-scheme: dark)")
+          .addEventListener("change", () => {
+            if (themes[idx] === "system") setTheme("system");
+          });
+      </script>
+    </footer>
+  </main>
 </Layout>
