@@ -1,10 +1,160 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import AuthWrapper from '../components/AuthWrapper.astro';
+
+// This would come from your data source in a real app
+const stats = [
+  { name: 'Total Students', value: '1,234', change: '+12%', changeType: 'increase' },
+  { name: 'Active Teachers', value: '42', change: '+3', changeType: 'increase' },
+  { name: 'Classes', value: '24', change: '+2', changeType: 'increase' },
+  { name: 'Attendance Today', value: '94%', change: '+2.5%', changeType: 'increase' },
+];
+
+const recentActivity = [
+  { id: 1, user: 'John Doe', action: 'submitted Math homework', time: '2 minutes ago' },
+  { id: 2, user: 'Jane Smith', action: 'marked attendance for Class 10A', time: '1 hour ago' },
+  { id: 3, user: 'Admin', action: 'added new assignment', time: '3 hours ago' },
+  { id: 4, user: 'Mike Johnson', action: 'updated student records', time: '5 hours ago' },
+];
+
 ---
 
 <Layout>
-  <main class="flex flex-col items-center justify-center min-h-screen">
-    <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
-    <p class="text-gray-600">Welcome! (Role-based content coming soon)</p>
-  </main>
+  <AuthWrapper>
+    <div class="min-h-screen bg-base-200">
+      <!-- Page header -->
+      <div class="bg-base-100 shadow">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-base-content">Dashboard</h1>
+            <div class="flex space-x-3">
+              <button class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                New
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        {/* Stats */}
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+          {stats.map((stat) => (
+            <div key={stat.name} class="bg-base-100 overflow-hidden shadow rounded-lg">
+              <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-base-content/50 truncate">{stat.name}</dt>
+                <dd class="mt-1 flex items-baseline">
+                  <div class="text-2xl font-semibold text-base-content">{stat.value}</div>
+                  <div class={`ml-2 flex items-baseline text-sm font-semibold ${
+                    stat.changeType === 'increase' ? 'text-success' : 'text-error'
+                  }`}>
+                    <svg class="self-center flex-shrink-0 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">{stat.changeType === 'increase' ? 'Increased' : 'Decreased'} by</span>
+                    {stat.change}
+                  </div>
+                </dd>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Recent Activity */}
+          <div class="lg:col-span-2">
+            <div class="bg-base-100 shadow rounded-lg overflow-hidden">
+              <div class="px-4 py-5 border-b border-base-200 sm:px-6">
+                <h3 class="text-lg font-medium leading-6 text-base-content">Recent Activity</h3>
+              </div>
+              <div class="divide-y divide-base-200">
+                {recentActivity.map((activity) => (
+                  <div key={activity.id} class="px-4 py-4 sm:px-6 hover:bg-base-200 transition-colors">
+                    <div class="flex items-center">
+                      <div class="min-w-0 flex-1 flex items-center">
+                        <div class="flex-shrink-0">
+                          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                            {activity.user.charAt(0)}
+                          </div>
+                        </div>
+                        <div class="min-w-0 flex-1 px-4">
+                          <div>
+                            <p class="text-sm font-medium text-base-content truncate">
+                              {activity.user} <span class="text-base-content/70">{activity.action}</span>
+                            </p>
+                            <p class="text-sm text-base-content/50">
+                              {activity.time}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div class="px-4 py-3 bg-base-100 text-right sm:px-6">
+                <a href="/activity" class="text-sm font-medium text-primary hover:text-primary/80">
+                  View all activity
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div>
+            <div class="bg-base-100 shadow rounded-lg overflow-hidden">
+              <div class="px-4 py-5 border-b border-base-200 sm:px-6">
+                <h3 class="text-lg font-medium leading-6 text-base-content">Quick Actions</h3>
+              </div>
+              <div class="p-6 space-y-4">
+                <a href="/students/add" class="btn btn-block btn-outline justify-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-2v2a2 2 0 01-2 2H8a2 2 0 01-2-2v-2H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM8 8a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
+                  </svg>
+                  Add New Student
+                </a>
+                <a href="/attendance" class="btn btn-block btn-outline justify-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                  </svg>
+                  Take Attendance
+                </a>
+                <a href="/grades" class="btn btn-block btn-outline justify-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  Record Grades
+                </a>
+                <a href="/announcements/new" class="btn btn-block btn-outline justify-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-2v2a2 2 0 01-2 2H8a2 2 0 01-2-2v-2H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM8 8a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
+                  </svg>
+                  New Announcement
+                </a>
+              </div>
+            </div>
+
+            {/* Upcoming Events */}
+            <div class="mt-6 bg-base-100 shadow rounded-lg overflow-hidden">
+              <div class="px-4 py-5 border-b border-base-200 sm:px-6">
+                <h3 class="text-lg font-medium leading-6 text-base-content">Upcoming Events</h3>
+              </div>
+              <div class="p-6">
+                <div class="text-center py-4">
+                  <p class="text-base-content/70">No upcoming events</p>
+                  <a href="/calendar" class="mt-2 text-sm font-medium text-primary hover:text-primary/80">
+                    View calendar
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </AuthWrapper>
 </Layout>

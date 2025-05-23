@@ -1,0 +1,22 @@
+---
+---
+
+<slot />
+
+<script>
+  // Client-side authentication check
+  import { getCurrentUser } from '../lib/supabase';
+  
+  // This runs on the client side
+  document.addEventListener('astro:page-load', async () => {
+    try {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      window.location.href = '/login';
+    }
+  });
+</script>
