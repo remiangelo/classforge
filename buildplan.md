@@ -1,7 +1,5 @@
 # 🎓 Comprehensive School Management System - Phased Development Roadmap (Astro Edition)
 
-A modular, performant roadmap to build a feature-rich school management platform using [Astro.build](https://astro.build).
-
 ---
 
 ## 🧱 Phase 1: MVP - Core System Foundation

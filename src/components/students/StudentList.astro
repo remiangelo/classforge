@@ -1,0 +1,158 @@
+---
+// Simple StudentList component without TypeScript
+---
+
+<div id="student-list" class="space-y-4">
+  <!-- Loading state -->
+  <div id="loading" class="flex justify-center items-center h-64">
+    <div class="loading loading-spinner loading-lg"></div>
+  </div>
+
+  <!-- Error state (initially hidden) -->
+  <div id="error" class="alert alert-error hidden">
+    <span id="error-message"></span>
+  </div>
+
+  <!-- Content (initially hidden) -->
+  <div id="content" class="hidden">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Student Roster</h2>
+      <button id="add-student" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        Add Student
+      </button>
+    </div>
+    
+    <div class="overflow-x-auto bg-base-100 rounded-lg shadow">
+      <table class="table w-full">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Grade</th>
+            <th>Enrollment Date</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="students-table-body">
+          <!-- Will be populated by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Simple utility function to safely access DOM elements
+  function getElementOrThrow(id) {
+    const el = document.getElementById(id);
+    if (!el) throw new Error(`Element with id '${id}' not found`);
+    return el;
+  }
+
+  // Helper function to update the UI state
+  function updateUI(state, errorMessage = '') {
+    try {
+      const loadingEl = getElementOrThrow('loading');
+      const errorEl = getElementOrThrow('error');
+      const errorMessageEl = getElementOrThrow('error-message');
+      const contentEl = getElementOrThrow('content');
+
+      switch (state) {
+        case 'loading':
+          loadingEl.classList.remove('hidden');
+          errorEl.classList.add('hidden');
+          contentEl.classList.add('hidden');
+          break;
+        case 'error':
+          loadingEl.classList.add('hidden');
+          errorMessageEl.textContent = errorMessage;
+          errorEl.classList.remove('hidden');
+          break;
+        case 'success':
+          loadingEl.classList.add('hidden');
+          errorEl.classList.add('hidden');
+          contentEl.classList.remove('hidden');
+          break;
+      }
+    } catch (error) {
+      console.error('Error updating UI:', error);
+    }
+  }
+
+  // Format date to local string
+  function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid date';
+    }
+  }
+
+  // Initialize the component when the page loads
+  document.addEventListener('astro:page-load', async () => {
+    try {
+      updateUI('loading');
+      
+      // Check if Supabase client is available
+      if (!window.supabase) {
+        throw new Error('Supabase client not initialized');
+      }
+      
+      // Fetch students from Supabase
+      const { data: students, error } = await window.supabase
+        .from('students')
+        .select('*')
+        .order('last_name', { ascending: true });
+      
+      if (error) throw error;
+      
+      // Ensure students is an array
+      const studentList = Array.isArray(students) ? students : [];
+      const tableBody = getElementOrThrow('students-table-body');
+      
+      // Populate the table
+      if (studentList.length > 0) {
+        tableBody.innerHTML = studentList.map(student => `
+          <tr class="hover">
+            <td>${student.first_name || ''} ${student.last_name || ''}</td>
+            <td>${student.email || 'N/A'}</td>
+            <td>${student.grade_level != null ? `Grade ${student.grade_level}` : 'N/A'}</td>
+            <td>${formatDate(student.enrollment_date)}</td>
+            <td class="text-right">
+              <div class="flex justify-end space-x-2">
+                <button class="btn btn-ghost btn-xs">View</button>
+                <button class="btn btn-ghost btn-xs">Edit</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-4">No students found</td>
+          </tr>
+        `;
+      }
+      
+      // Set up event listener for the Add Student button
+      const addStudentBtn = document.getElementById('add-student');
+      if (addStudentBtn) {
+        addStudentBtn.addEventListener('click', () => {
+          // TODO: Implement add student functionality
+          alert('Add student functionality coming soon!');
+        });
+      }
+      
+      updateUI('success');
+    } catch (error) {
+      console.error('Error loading students:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load students';
+      updateUI('error', errorMessage);
+    }
+  });
+</script>
