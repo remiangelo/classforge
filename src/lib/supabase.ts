@@ -194,3 +194,37 @@ export const updateProfile = async (profile: Partial<Profile>): Promise<{ error:
     return { error: e as Error };
   }
 };
+
+/**
+ * Send password reset email to the user
+ * @param email User's email
+ * @returns Error if any
+ */
+export const resetPassword = async (email: string): Promise<{ error: AuthError | null }> => {
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error };
+  } catch (e) {
+    console.error('Error during password reset:', e);
+    return { error: e as AuthError };
+  }
+};
+
+/**
+ * Update user's password
+ * @param newPassword New password
+ * @returns Error if any
+ */
+export const updatePassword = async (newPassword: string): Promise<{ error: AuthError | null }> => {
+  try {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+    return { error };
+  } catch (e) {
+    console.error('Error updating password:', e);
+    return { error: e as AuthError };
+  }
+};

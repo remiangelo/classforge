@@ -1,0 +1,39 @@
+---
+import Layout from "./Layout.astro";
+import Sidebar from "../components/dashboard/Sidebar.astro";
+import Header from "../components/dashboard/Header.astro";
+import AuthWrapper from "../components/AuthWrapper.astro";
+import type { UserRole } from "../types/models";
+
+interface Props {
+  title?: string;
+  description?: string;
+  allowedRoles?: UserRole[];
+}
+
+const { 
+  title = 'Dashboard - ClassForge',
+  description = 'ClassForge School Management System Dashboard',
+  allowedRoles = ["admin", "teacher", "student", "parent"]
+} = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <AuthWrapper allowedRoles={allowedRoles}>
+    <div class="flex min-h-screen flex-col">
+      <Sidebar />
+      
+      <div class="flex flex-1 flex-col lg:pl-64">
+        <Header />
+        
+        <main class="flex-1 p-4 sm:p-6 lg:p-8">
+          <slot />
+        </main>
+        
+        <footer class="border-t border-border p-4 text-center text-sm text-muted-foreground">
+          <p>&copy; {new Date().getFullYear()} ClassForge. All rights reserved.</p>
+        </footer>
+      </div>
+    </div>
+  </AuthWrapper>
+</Layout>

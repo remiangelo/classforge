@@ -1,0 +1,79 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import StudentList from "../../components/students/StudentList.astro";
+
+// This page will list all students and provide management options
+---
+
+<DashboardLayout title="Students - ClassForge" description="Manage your students" allowedRoles={["admin", "teacher"]}>
+  <div class="space-y-8">
+    <!-- Page header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold">Students</h1>
+        <p class="text-muted-foreground mt-1">View and manage all students in your school.</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button class="btn btn-outline gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export
+        </button>
+        <a href="/students/add" class="btn btn-primary gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+          Add Student
+        </a>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-3 items-center bg-card border border-border p-4 rounded-lg">
+      <div class="flex-1 min-w-[240px]">
+        <div class="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input type="text" placeholder="Search students..." class="pl-10 w-full input input-bordered" />
+        </div>
+      </div>
+      <div>
+        <select class="select select-bordered w-full">
+          <option disabled selected>Grade</option>
+          <option>All Grades</option>
+          <option>Grade 1</option>
+          <option>Grade 2</option>
+          <option>Grade 3</option>
+        </select>
+      </div>
+      <div>
+        <select class="select select-bordered w-full">
+          <option disabled selected>Status</option>
+          <option>All</option>
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+      </div>
+      <button class="btn btn-outline">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3h18v18H3z"></path>
+          <path d="M7 7h10v10H7z"></path>
+          <path d="M3 7h4"></path>
+          <path d="M3 17h4"></path>
+          <path d="M17 3v4"></path>
+          <path d="M17 17v4"></path>
+        </svg>
+        More Filters
+      </button>
+    </div>
+
+    <!-- Students List -->
+    <StudentList />
+  </div>
+</DashboardLayout>

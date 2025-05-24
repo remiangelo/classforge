@@ -1,0 +1,35 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// Server-side redirect will happen in the client script
+---
+
+<!-- Client-side script -->
+<script>
+  document.addEventListener('astro:page-load', async () => {
+    try {
+      const { signOut } = await import('../lib/supabase');
+      await signOut();
+      // Redirect to login page
+      window.location.href = '/login?logout=success';
+    } catch (error) {
+      console.error('Error signing out:', error);
+      // Still redirect to login page even if there's an error
+      window.location.href = '/login';
+    }
+  });
+</script>
+
+<Layout title="Logging Out - ClassForge">
+  <main class="min-h-screen bg-base-200 flex items-center justify-center p-4">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+      <div class="card-body text-center">
+        <h2 class="text-2xl font-bold mb-4">Logging out...</h2>
+        <div class="flex justify-center">
+          <div class="loading loading-spinner loading-lg"></div>
+        </div>
+        <p class="mt-4 text-muted-foreground">You will be redirected to the login page shortly.</p>
+      </div>
+    </div>
+  </main>
+</Layout>

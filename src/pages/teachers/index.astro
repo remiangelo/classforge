@@ -1,0 +1,198 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+
+// Sample data for teachers
+const teachers = [
+  { 
+    id: 1, 
+    name: "John Doe", 
+    email: "john.doe@classforge.edu",
+    department: "Mathematics",
+    classes: 3,
+    joinDate: "2021-08-15",
+    phone: "(555) 123-4567",
+    status: "active" 
+  },
+  { 
+    id: 2, 
+    name: "Jane Smith", 
+    email: "jane.smith@classforge.edu",
+    department: "Science",
+    classes: 4,
+    joinDate: "2019-07-20",
+    phone: "(555) 234-5678",
+    status: "active" 
+  },
+  { 
+    id: 3, 
+    name: "Robert Johnson", 
+    email: "robert.johnson@classforge.edu",
+    department: "English",
+    classes: 3,
+    joinDate: "2020-01-10",
+    phone: "(555) 345-6789",
+    status: "active" 
+  },
+  { 
+    id: 4, 
+    name: "Sarah Williams", 
+    email: "sarah.williams@classforge.edu",
+    department: "Computer Science",
+    classes: 2,
+    joinDate: "2022-02-15",
+    phone: "(555) 456-7890",
+    status: "active" 
+  },
+  { 
+    id: 5, 
+    name: "Michael Brown", 
+    email: "michael.brown@classforge.edu",
+    department: "Art",
+    classes: 3,
+    joinDate: "2018-09-01",
+    phone: "(555) 567-8901",
+    status: "inactive" 
+  },
+];
+
+// Create a function to format the date
+function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('en-US', options);
+}
+---
+
+<DashboardLayout title="Teachers - ClassForge" description="Manage your teachers" allowedRoles={["admin"]}>
+  <div class="space-y-8">
+    <!-- Page header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold">Teachers</h1>
+        <p class="text-muted-foreground mt-1">View and manage all teachers in your school.</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button class="btn btn-outline gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export
+        </button>
+        <a href="/teachers/add" class="btn btn-primary gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+          Add Teacher
+        </a>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-3 items-center bg-card border border-border p-4 rounded-lg">
+      <div class="flex-1 min-w-[240px]">
+        <div class="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input type="text" placeholder="Search teachers..." class="pl-10 w-full input input-bordered" />
+        </div>
+      </div>
+      <div>
+        <select class="select select-bordered w-full">
+          <option disabled selected>Department</option>
+          <option>All Departments</option>
+          <option>Mathematics</option>
+          <option>Science</option>
+          <option>English</option>
+          <option>Computer Science</option>
+          <option>Art</option>
+        </select>
+      </div>
+      <div>
+        <select class="select select-bordered w-full">
+          <option disabled selected>Status</option>
+          <option>All</option>
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Teachers List -->
+    <div class="rounded-lg border border-border bg-card overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-border bg-muted/50">
+              <th class="px-4 py-3 text-left font-medium">Name</th>
+              <th class="px-4 py-3 text-left font-medium">Email</th>
+              <th class="px-4 py-3 text-left font-medium">Department</th>
+              <th class="px-4 py-3 text-left font-medium">Classes</th>
+              <th class="px-4 py-3 text-left font-medium">Join Date</th>
+              <th class="px-4 py-3 text-left font-medium">Status</th>
+              <th class="px-4 py-3 text-right font-medium">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {teachers.map((teacher) => (
+              <tr class="border-b border-border hover:bg-muted/50">
+                <td class="px-4 py-3 font-medium">
+                  <a href={`/teachers/${teacher.id}`} class="hover:underline text-primary flex items-center gap-2">
+                    <div class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
+                      {teacher.name.charAt(0)}
+                    </div>
+                    <span>{teacher.name}</span>
+                  </a>
+                </td>
+                <td class="px-4 py-3 text-muted-foreground">{teacher.email}</td>
+                <td class="px-4 py-3">{teacher.department}</td>
+                <td class="px-4 py-3">
+                  <a href={`/teachers/${teacher.id}/classes`} class="text-primary hover:underline">
+                    {teacher.classes} Classes
+                  </a>
+                </td>
+                <td class="px-4 py-3 text-muted-foreground">{formatDate(teacher.joinDate)}</td>
+                <td class="px-4 py-3">
+                  <span class={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${teacher.status === 'active' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'}`}>
+                    {teacher.status === 'active' ? 'Active' : 'Inactive'}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex justify-end gap-2">
+                    <a href={`/teachers/${teacher.id}/edit`} class="btn btn-sm btn-outline">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                        <path d="m15 5 4 4"></path>
+                      </svg>
+                      <span class="sr-only">Edit</span>
+                    </a>
+                    <button class="btn btn-sm btn-outline btn-error">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                      </svg>
+                      <span class="sr-only">Delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3 border-t border-border">
+        <div class="text-sm text-muted-foreground">
+          Showing <span class="font-medium">{teachers.length}</span> of <span class="font-medium">{teachers.length}</span> teachers
+        </div>
+        <div class="flex gap-1">
+          <button disabled class="btn btn-sm btn-outline">Previous</button>
+          <button class="btn btn-sm btn-outline">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</DashboardLayout>

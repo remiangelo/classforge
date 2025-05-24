@@ -1,0 +1,195 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+
+// Sample data for classes
+const classes = [
+  { 
+    id: 1, 
+    name: "Mathematics 101", 
+    grade: "Grade 9",
+    teacher: "John Doe",
+    students: 24,
+    schedule: "MWF 9:00 AM - 10:30 AM",
+    room: "Room 202",
+    status: "active" 
+  },
+  { 
+    id: 2, 
+    name: "Physics", 
+    grade: "Grade 10",
+    teacher: "Jane Smith",
+    students: 18,
+    schedule: "TTh 11:00 AM - 12:30 PM",
+    room: "Room 105",
+    status: "active" 
+  },
+  { 
+    id: 3, 
+    name: "Literature", 
+    grade: "Grade 8",
+    teacher: "Robert Johnson",
+    students: 28,
+    schedule: "MWF 1:00 PM - 2:30 PM",
+    room: "Room 304",
+    status: "active" 
+  },
+  { 
+    id: 4, 
+    name: "Computer Science", 
+    grade: "Grade 11",
+    teacher: "Sarah Williams",
+    students: 20,
+    schedule: "TTh 2:00 PM - 3:30 PM",
+    room: "Lab 101",
+    status: "active" 
+  },
+  { 
+    id: 5, 
+    name: "Art History", 
+    grade: "Grade 10",
+    teacher: "Michael Brown",
+    students: 22,
+    schedule: "MWF 10:00 AM - 11:30 AM",
+    room: "Room 205",
+    status: "inactive" 
+  },
+];
+---
+
+<DashboardLayout title="Classes - ClassForge" description="Manage your classes" allowedRoles={["admin", "teacher"]}>
+  <div class="space-y-8">
+    <!-- Page header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold">Classes</h1>
+        <p class="text-muted-foreground mt-1">View and manage all classes in your school.</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button class="btn btn-outline gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export
+        </button>
+        <a href="/classes/add" class="btn btn-primary gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+          Add Class
+        </a>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-3 items-center bg-card border border-border p-4 rounded-lg">
+      <div class="flex-1 min-w-[240px]">
+        <div class="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input type="text" placeholder="Search classes..." class="pl-10 w-full input input-bordered" />
+        </div>
+      </div>
+      <div>
+        <select class="select select-bordered w-full">
+          <option disabled selected>Grade</option>
+          <option>All Grades</option>
+          <option>Grade 8</option>
+          <option>Grade 9</option>
+          <option>Grade 10</option>
+          <option>Grade 11</option>
+        </select>
+      </div>
+      <div>
+        <select class="select select-bordered w-full">
+          <option disabled selected>Teacher</option>
+          <option>All Teachers</option>
+          <option>John Doe</option>
+          <option>Jane Smith</option>
+          <option>Robert Johnson</option>
+        </select>
+      </div>
+      <div>
+        <select class="select select-bordered w-full">
+          <option disabled selected>Status</option>
+          <option>All</option>
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Classes List -->
+    <div class="rounded-lg border border-border bg-card overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-border bg-muted/50">
+              <th class="px-4 py-3 text-left font-medium">Class Name</th>
+              <th class="px-4 py-3 text-left font-medium">Grade</th>
+              <th class="px-4 py-3 text-left font-medium">Teacher</th>
+              <th class="px-4 py-3 text-left font-medium">Students</th>
+              <th class="px-4 py-3 text-left font-medium">Schedule</th>
+              <th class="px-4 py-3 text-left font-medium">Room</th>
+              <th class="px-4 py-3 text-left font-medium">Status</th>
+              <th class="px-4 py-3 text-right font-medium">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {classes.map((classItem) => (
+              <tr class="border-b border-border hover:bg-muted/50">
+                <td class="px-4 py-3 font-medium">
+                  <a href={`/classes/${classItem.id}`} class="hover:underline text-primary">
+                    {classItem.name}
+                  </a>
+                </td>
+                <td class="px-4 py-3 text-muted-foreground">{classItem.grade}</td>
+                <td class="px-4 py-3">{classItem.teacher}</td>
+                <td class="px-4 py-3">{classItem.students}</td>
+                <td class="px-4 py-3 text-muted-foreground">{classItem.schedule}</td>
+                <td class="px-4 py-3">{classItem.room}</td>
+                <td class="px-4 py-3">
+                  <span class={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${classItem.status === 'active' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'}`}>
+                    {classItem.status === 'active' ? 'Active' : 'Inactive'}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex justify-end gap-2">
+                    <a href={`/classes/${classItem.id}/edit`} class="btn btn-sm btn-outline">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                        <path d="m15 5 4 4"></path>
+                      </svg>
+                      <span class="sr-only">Edit</span>
+                    </a>
+                    <button class="btn btn-sm btn-outline btn-error">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                      </svg>
+                      <span class="sr-only">Delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3 border-t border-border">
+        <div class="text-sm text-muted-foreground">
+          Showing <span class="font-medium">{classes.length}</span> of <span class="font-medium">{classes.length}</span> classes
+        </div>
+        <div class="flex gap-1">
+          <button disabled class="btn btn-sm btn-outline">Previous</button>
+          <button class="btn btn-sm btn-outline">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</DashboardLayout>
