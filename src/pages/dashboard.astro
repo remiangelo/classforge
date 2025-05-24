@@ -41,17 +41,15 @@ const recentActivity = [
 
       <!-- Main content -->
       <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        {/* Stats */}
+        <!-- Stats -->
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
           {stats.map((stat) => (
-            <div key={stat.name} class="bg-base-100 overflow-hidden shadow rounded-lg">
+            <div class="bg-base-100 overflow-hidden shadow rounded-lg">
               <div class="px-4 py-5 sm:p-6">
                 <dt class="text-sm font-medium text-base-content/50 truncate">{stat.name}</dt>
                 <dd class="mt-1 flex items-baseline">
                   <div class="text-2xl font-semibold text-base-content">{stat.value}</div>
-                  <div class={`ml-2 flex items-baseline text-sm font-semibold ${
-                    stat.changeType === 'increase' ? 'text-success' : 'text-error'
-                  }`}>
+                  <div class={`ml-2 flex items-baseline text-sm font-semibold ${stat.changeType === 'increase' ? 'text-success' : 'text-error'}`}>
                     <svg class="self-center flex-shrink-0 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                       <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                     </svg>
@@ -65,7 +63,7 @@ const recentActivity = [
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Recent Activity */}
+          <!-- Recent Activity -->
           <div class="lg:col-span-2">
             <div class="bg-base-100 shadow rounded-lg overflow-hidden">
               <div class="px-4 py-5 border-b border-base-200 sm:px-6">
@@ -73,7 +71,7 @@ const recentActivity = [
               </div>
               <div class="divide-y divide-base-200">
                 {recentActivity.map((activity) => (
-                  <div key={activity.id} class="px-4 py-4 sm:px-6 hover:bg-base-200 transition-colors">
+                  <div class="px-4 py-4 sm:px-6 hover:bg-base-200 transition-colors">
                     <div class="flex items-center">
                       <div class="min-w-0 flex-1 flex items-center">
                         <div class="flex-shrink-0">
@@ -104,7 +102,7 @@ const recentActivity = [
             </div>
           </div>
 
-          {/* Quick Actions */}
+          <!-- Quick Actions -->
           <div>
             <div class="bg-base-100 shadow rounded-lg overflow-hidden">
               <div class="px-4 py-5 border-b border-base-200 sm:px-6">
@@ -138,7 +136,7 @@ const recentActivity = [
               </div>
             </div>
 
-            {/* Upcoming Events */}
+            <!-- Upcoming Events -->
             <div class="mt-6 bg-base-100 shadow rounded-lg overflow-hidden">
               <div class="px-4 py-5 border-b border-base-200 sm:px-6">
                 <h3 class="text-lg font-medium leading-6 text-base-content">Upcoming Events</h3>

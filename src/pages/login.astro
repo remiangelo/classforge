@@ -9,11 +9,12 @@ const formId = 'login-form';
 <!-- Client-side script -->
 <script>
   document.addEventListener('astro:page-load', () => {
-    const form = document.getElementById('${formId}');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
+    const formId = 'login-form';
+    const form = document.getElementById(formId);
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const passwordInput = document.getElementById('password') as HTMLInputElement;
     const errorElement = document.getElementById('error-message');
-    const submitButton = document.querySelector('button[type="submit"]');
+    const submitButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
     let isLoading = false;
 
     if (!form || !emailInput || !passwordInput || !errorElement || !submitButton) return;
@@ -24,10 +25,13 @@ const formId = 'login-form';
       // Update UI
       isLoading = true;
       submitButton.disabled = true;
-      errorElement.textContent = '';
+      if (errorElement) errorElement.textContent = '';
       submitButton.innerHTML = 'Signing in...';
       
       try {
+        // Import needs to be inside the function since this runs client-side
+        const { signInWithEmail } = await import('../lib/supabase');
+        
         const { error } = await signInWithEmail(
           emailInput.value,
           passwordInput.value
@@ -35,9 +39,11 @@ const formId = 'login-form';
         
         if (error) throw error;
         window.location.href = '/dashboard';
-      } catch (error) {
+      } catch (error: any) {
         console.error('Login error:', error);
-        errorElement.textContent = error.error_description || error.message || 'An error occurred';
+        if (errorElement) {
+          errorElement.textContent = error.error_description || error.message || 'An error occurred';
+        }
       } finally {
         isLoading = false;
         submitButton.disabled = false;
@@ -48,7 +54,7 @@ const formId = 'login-form';
 </script>
 
 <Layout title="Login">
-  <div class="min-h-screen flex items-center justify-center bg-base-200 p-4">
+  <main class="min-h-screen bg-base-200 flex items-center justify-center p-4">
     <div class="card w-full max-w-md bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title text-2xl font-bold mb-6">Welcome Back</h2>
@@ -116,89 +122,5 @@ const formId = 'login-form';
         </p>
       </div>
     </div>
-  </div>
-</Layout>
-    <div class="card w-full max-w-md bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title text-2xl font-bold mb-6">Welcome Back</h2>
-        
-        {error && (
-          <div class="alert alert-error mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{error}</span>
-          </div>
-        )}
-
-        <form on:submit={handleSubmit} class="space-y-4">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Email</span>
-            </label>
-            <input
-              type="email"
-              placeholder="your@email.com"
-              class="input input-bordered w-full"
-              value={email}
-              on:input={handleEmailChange}
-              required
-            />
-          </div>
-          
-          <div class="form-control">
-            <div class="flex justify-between items-center">
-              <label class="label">
-                <span class="label-text">Password</span>
-              </label>
-              <a href="/forgot-password" class="label-text-alt link link-hover">
-                Forgot password?
-              </a>
-            </div>
-            <input
-              type="password"
-              placeholder="••••••••"
-              class="input input-bordered w-full"
-              value={password}
-              on:input={handlePasswordChange}
-              required
-            />
-          </div>
-
-          <div class="form-control mt-6">
-            <button 
-              type="submit" 
-              class={`btn btn-primary ${loading ? 'loading' : ''}`}
-              disabled={loading}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </div>
-        </form>
-
-        <div class="divider">OR</div>
-        
-        <div class="flex flex-col space-y-3">
-          <button type="button" class="btn btn-outline">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12.545 10.239v3.821h5.445c-0.712 2.315-2.647 3.972-5.445 3.972-3.332 0-6.033-2.701-6.033-6.032s2.701-6.032 6.033-6.032c1.498 0 2.866 0.549 3.921 1.453l2.814-2.814c-1.788-1.669-4.256-2.7-6.735-2.7-5.526 0-10 4.475-10 10s4.474 10 10 10c8.396 0 10-7.127 10-12.1 0-0.612-0.052-1.1-0.115-1.574h-9.885z" />
-            </svg>
-            Continue with Google
-          </button>
-        </div>
-        
-        <p class="text-center mt-4">
-          Don't have an account?{' '}
-          <a href="/signup" class="link link-primary">Sign up</a>
-        </p>
-      </div>
-    </div>
-  );
-};
----
-
-<Layout>
-  <main className="min-h-screen bg-base-200 flex items-center justify-center p-4">
-    <LoginForm client:load />
   </main>
 </Layout>

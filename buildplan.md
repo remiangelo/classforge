@@ -6,12 +6,12 @@
 
 **🎯 Goal:** Launch a fast, responsive foundation with basic school operations.
 
-### 🔑 Features
+### 🔑 Phase 1 Core Features
 
-- Astro SSR with Islands architecture
-- Authentication & role-based access (Admin, Teacher, Student, Parent)
-- Student Information System (SIS)
-  - Basic student profiles
+- ✅ Astro SSR with Islands architecture
+- ⏳ Authentication & role-based access (Admin, Teacher, Student, Parent) - *In Progress*
+- ⏳ Student Information System (SIS) - *In Progress*
+  - ⏳ Basic student profiles - *Structure defined*
   - Class enrollment
 - Staff & teacher management
 - Static timetable display
@@ -19,18 +19,18 @@
 - Basic gradebook + PDF report card
 - Parent portal access (readonly)
 - Fee setup + manual entry
-- Announcement board (Astro content collection)
-- Responsive design (mobile-first)
-- Dark/light mode with local storage toggle
+- ✅ Announcement board (Astro content collection)
+- ✅ Responsive design (mobile-first)
+- ✅ Dark/light mode with local storage toggle
 
-### 🛠 Tech Stack
+### 🛠 Foundation Tech Stack
 
-- `Astro.build` with `TypeScript`
-- UI Framework: `React` or `Preact` islands
-- Styling: `TailwindCSS` + `Radix UI` components
-- Backend: `Supabase` (auth, database, storage)
-- Routing: Astro’s file-based routing
-- Forms: Astro forms + Supabase mutations
+- ✅ `Astro.build` with `TypeScript`
+- ✅ UI Framework: `React` islands
+- ✅ Styling: `TailwindCSS` + `Radix UI` components
+- ✅ Backend: `Supabase` (auth, database, storage)
+- ✅ Routing: Astro's file-based routing
+- ⏳ Forms: Astro forms + Supabase mutations - *In Progress*
 
 ---
 
@@ -38,7 +38,7 @@
 
 **🎯 Goal:** Improve efficiency with interactive UI and backend logic.
 
-### 🔑 Features
+### 🔑 Phase 2 Core Features
 
 - Dynamic timetable builder (React island)
 - Per-period attendance system
@@ -50,7 +50,7 @@
 - Teacher workload views
 - Image/doc upload for student profiles
 
-### 💡 UI/UX Upgrades
+### 💡 Phase 2 UI/UX Upgrades
 
 - Astro layouts + slots for cleaner structure
 - Client-side interactivity via Astro islands
@@ -62,7 +62,7 @@
 
 **🎯 Goal:** Enable structured course delivery and feedback.
 
-### 🔑 Features
+### 🔑 Phase 3 Core Features
 
 - Course modules (Markdown + video/PDF embeds)
 - Homework + grading interface
@@ -73,7 +73,7 @@
 - Behavior incident log
 - Email alerts for attendance
 
-### 🔗 Integrations
+### 🔗 Learning Integrations
 
 - Google Drive for file uploads
 - SMS: Twilio or Nexmo
@@ -85,7 +85,7 @@
 
 **🎯 Goal:** Provide insights and automate key operations.
 
-### 🔑 Features
+### 🔑 Phase 4 Core Features
 
 - Custom report builder (grades, attendance, fees)
 - Grade distribution + heatmaps
@@ -94,7 +94,7 @@
 - Scheduled email reports
 - Attendance trends visualization (Chart.js island)
 
-### 🛠 Tech Tools
+### 🛠 Analytics Tech Tools
 
 - Charting with `Recharts` or `Chart.js`
 - Edge functions or Supabase CRON for automation
@@ -106,7 +106,7 @@
 
 **🎯 Goal:** Handle external applications and public-facing content.
 
-### 🔑 Features
+### 🔑 Phase 5 Core Features
 
 - CMS-powered public website (Astro content collections)
 - Admission form (multi-step + file uploads)
@@ -115,7 +115,7 @@
 - Chatbot or contact form (island)
 - Application fee via Stripe
 
-### 💡 UI
+### 💡 Portal UI/UX
 
 - Forms with client-side validation
 - Captcha and email verification
@@ -127,7 +127,7 @@
 
 **🎯 Goal:** Deliver offline-friendly tools and integrate key systems.
 
-### 🔑 Features
+### 🔑 Phase 6 Core Features
 
 - Mobile app (React Native or Expo)
 - Offline attendance/assignment sync
@@ -142,7 +142,7 @@
 
 **🎯 Goal:** Build enterprise features and admin tooling.
 
-### 🔑 Features
+### 🔑 Phase 7 Core Features
 
 - Multi-school/branch support
 - RBAC permission editor UI

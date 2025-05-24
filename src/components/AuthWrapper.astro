@@ -1,17 +1,18 @@
 ---
+// Description: A wrapper component that checks for authentication
+// and redirects to login if not authenticated
 ---
 
 <slot />
 
 <script>
   // Client-side authentication check
-  import { getCurrentUser } from '../lib/supabase';
-  
-  // This runs on the client side
   document.addEventListener('astro:page-load', async () => {
     try {
+      const { getCurrentUser } = await import('../lib/supabase');
       const user = await getCurrentUser();
       if (!user) {
+        console.warn('No authenticated user found, redirecting to login');
         window.location.href = '/login';
       }
     } catch (error) {

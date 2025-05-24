@@ -46,14 +46,14 @@
 
 <script>
   // Simple utility function to safely access DOM elements
-  function getElementOrThrow(id) {
+  function getElementOrThrow(id: string): HTMLElement {
     const el = document.getElementById(id);
     if (!el) throw new Error(`Element with id '${id}' not found`);
     return el;
   }
 
   // Helper function to update the UI state
-  function updateUI(state, errorMessage = '') {
+  function updateUI(state: 'loading' | 'error' | 'success', errorMessage: string = '') {
     try {
       const loadingEl = getElementOrThrow('loading');
       const errorEl = getElementOrThrow('error');
@@ -83,7 +83,7 @@
   }
 
   // Format date to local string
-  function formatDate(dateString) {
+  function formatDate(dateString: string | null | undefined): string {
     if (!dateString) return 'N/A';
     try {
       return new Date(dateString).toLocaleDateString();
@@ -98,13 +98,15 @@
     try {
       updateUI('loading');
       
-      // Check if Supabase client is available
-      if (!window.supabase) {
+      // Import the Supabase client
+      const { supabase } = await import('../../scripts/init-supabase.js');
+      
+      if (!supabase) {
         throw new Error('Supabase client not initialized');
       }
       
       // Fetch students from Supabase
-      const { data: students, error } = await window.supabase
+      const { data: students, error } = await supabase
         .from('students')
         .select('*')
         .order('last_name', { ascending: true });

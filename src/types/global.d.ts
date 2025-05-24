@@ -1,11 +1,14 @@
 // Type definitions for global objects
 
+// Define a type for database records
+type DatabaseRecord = Record<string, unknown>;
+
 // Supabase client types
 declare namespace SupabaseClient {
   interface QueryBuilder {
     from(table: string): {
       select(columns?: string): {
-        order(column: string, options?: { ascending: boolean }): Promise<{ data: any; error: Error | null }>;
+        order(column: string, options?: { ascending: boolean }): Promise<{ data: DatabaseRecord[] | null; error: Error | null }>;
       };
       // Add other methods as needed
     };
