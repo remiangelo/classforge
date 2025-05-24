@@ -1,21 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 const defaultTheme = require('tailwindcss/defaultTheme')
+const plugin = require('tailwindcss/plugin')
 
 module.exports = {
+  // Enable CSS nesting support
+  experimental: {
+    optimizeUniversalDefaults: true,
+  },
+  corePlugins: {
+    preflight: true,
+  },
   future: {
     hoverOnlyWhenSupported: true,
-  },
-  // Enable all variants for hover and focus states
-  variants: {
-    extend: {
-      backgroundColor: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
-      textColor: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
-      borderColor: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
-      opacity: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
-      scale: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
-      translate: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
-      boxShadow: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
-    },
   },
   // Ensure JIT mode is enabled for better performance
   mode: 'jit',
@@ -47,7 +43,6 @@ module.exports = {
     },
     extend: {
       colors: {
-        // Primary color palette
         primary: {
           50: '#f0fdf4',
           100: '#dcfce7',
@@ -117,10 +112,6 @@ module.exports = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',

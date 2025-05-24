@@ -1,29 +1,33 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { getCollection, CollectionEntry } from "astro:content";
-const announcements = await getCollection("announcements");
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const announcements = await getCollection('announcements');
 ---
 
 <Layout>
-  <main class="flex flex-col items-center justify-center min-h-screen">
-    <h1 class="text-2xl font-bold mb-4">Announcements</h1>
-    <ul class="w-full max-w-lg space-y-4">
-      {
-        announcements.length === 0 && (
-          <li class="text-gray-500">No announcements yet.</li>
-        )
-      }
-      {
-        (announcements as CollectionEntry<"announcements">[]).map((a) => {
-          return (
-            <li class="p-4 bg-white rounded shadow">
-              <h2 class="font-semibold">{a.data.title}</h2>
-              <p class="text-xs text-gray-400">{a.data.date}</p>
-              <div class="mt-2">{a.body}</div>
-            </li>
-          );
-        })
-      }
+  <main class="flex flex-col items-center justify-center min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-6">Announcements</h1>
+    <ul class="w-full max-w-2xl space-y-4">
+      {announcements.length === 0 ? (
+        <li class="text-gray-500 text-center">No announcements yet.</li>
+      ) : (
+        announcements.map((announcement) => (
+          <li class="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <h2 class="text-xl font-bold text-gray-800">{announcement.data.title}</h2>
+            <p class="text-sm text-gray-500 mt-1">
+              {new Date(announcement.data.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </p>
+            <div class="mt-3 prose prose-sm max-w-none text-gray-700">
+              {@html announcement.body}
+            </div>
+          </li>
+        ))
+      )}
     </ul>
   </main>
 </Layout>
