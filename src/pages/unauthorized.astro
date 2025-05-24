@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Unauthorized Access">
+  <main class="min-h-screen flex items-center justify-center p-4 bg-base-200">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="flex flex-col items-center justify-center space-y-4 text-center">
+          <div class="text-5xl text-error">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <h2 class="card-title text-2xl font-bold">Access Denied</h2>
+          <p class="text-lg">You don't have permission to access this page.</p>
+          <p class="text-base-content/70">Please contact an administrator if you believe this is an error.</p>
+          
+          <div class="flex space-x-4 mt-6">
+            <a href="/dashboard" class="btn btn-primary">
+              Go to Dashboard
+            </a>
+            <a href="/login" class="btn btn-outline">
+              Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

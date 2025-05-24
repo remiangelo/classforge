@@ -1,5 +1,10 @@
 ---
-// Simple StudentList component without TypeScript
+import { hasRole } from '../../lib/supabase';
+import type { Student } from '../../types/models';
+
+// Determine user permissions for the component
+const canEdit = await hasRole('admin') || await hasRole('teacher');
+const canAdd = await hasRole('admin');
 ---
 
 <div id="student-list" class="space-y-4">
@@ -17,12 +22,14 @@
   <div id="content" class="hidden">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">Student Roster</h2>
-      <button id="add-student" class="btn btn-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-        </svg>
-        Add Student
-      </button>
+      {canAdd && (
+        <button id="add-student" class="btn btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+          Add Student
+        </button>
+      )}
     </div>
     
     <div class="overflow-x-auto bg-base-100 rounded-lg shadow">
@@ -30,9 +37,10 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th>Student ID</th>
             <th>Email</th>
             <th>Grade</th>
-            <th>Enrollment Date</th>
+            <th>Status</th>
             <th class="text-right">Actions</th>
           </tr>
         </thead>
@@ -95,6 +103,9 @@
 
   // Initialize the component when the page loads
   document.addEventListener('astro:page-load', async () => {
+    // Use the server-side values for permissions
+    const canAdd = Boolean("${canAdd}");
+    const canEdit = Boolean("${canEdit}");
     try {
       updateUI('loading');
       
@@ -105,7 +116,7 @@
         throw new Error('Supabase client not initialized');
       }
       
-      // Fetch students from Supabase
+      // Fetch students from Supabase with enhanced model
       const { data: students, error } = await supabase
         .from('students')
         .select('*')
@@ -122,13 +133,21 @@
         tableBody.innerHTML = studentList.map(student => `
           <tr class="hover">
             <td>${student.first_name || ''} ${student.last_name || ''}</td>
+            <td>${student.student_id || 'N/A'}</td>
             <td>${student.email || 'N/A'}</td>
             <td>${student.grade_level != null ? `Grade ${student.grade_level}` : 'N/A'}</td>
-            <td>${formatDate(student.enrollment_date)}</td>
+            <td>
+              <div class="badge badge-${
+                student.status === 'active' ? 'success' : 
+                student.status === 'inactive' ? 'warning' : 
+                student.status === 'graduated' ? 'info' : 
+                student.status === 'transferred' ? 'neutral' : 'neutral'
+              }">${student.status || 'unknown'}</div>
+            </td>
             <td class="text-right">
               <div class="flex justify-end space-x-2">
-                <button class="btn btn-ghost btn-xs">View</button>
-                <button class="btn btn-ghost btn-xs">Edit</button>
+                <a href="/students/${student.id}" class="btn btn-ghost btn-xs">View</a>
+                ${canEdit ? `<a href="/students/edit/${student.id}" class="btn btn-ghost btn-xs">Edit</a>` : ''}
               </div>
             </td>
           </tr>
@@ -136,7 +155,7 @@
       } else {
         tableBody.innerHTML = `
           <tr>
-            <td colspan="5" class="text-center py-4">No students found</td>
+            <td colspan="6" class="text-center py-4">No students found</td>
           </tr>
         `;
       }

@@ -1,0 +1,133 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { supabase } from "../../lib/supabase";
+import AuthWrapper from "../../components/AuthWrapper.astro";
+import StudentProfile from "../../components/students/StudentProfile.astro";
+import type { Student } from "../../types/models";
+import { hasRole } from "../../lib/supabase";
+
+// Get the student ID from the URL
+const { id } = Astro.params;
+
+// Determine user permissions
+const canEdit = await hasRole('admin') || await hasRole('teacher');
+
+// Fetch student data
+let student: Student | null = null;
+let error: string | null = null;
+
+try {
+  if (!id) {
+    throw new Error("Student ID is required");
+  }
+
+  // Fetch the student
+  const { data, error: fetchError } = await supabase
+    .from("students")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (fetchError) {
+    throw fetchError;
+  }
+
+  if (!data) {
+    throw new Error("Student not found");
+  }
+
+  student = data as Student;
+} catch (e) {
+  console.error("Error fetching student:", e);
+  error = e instanceof Error ? e.message : "Failed to load student";
+}
+---
+
+<Layout title={student ? `${student.first_name} ${student.last_name} | Student Profile` : "Student Profile"}>
+  <AuthWrapper allowedRoles={["admin", "teacher", "student", "parent"]}>
+    <main class="container mx-auto px-4 py-8">
+      <div class="mb-6">
+        <a href="/students" class="btn btn-ghost">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          Back to Students
+        </a>
+      </div>
+
+      {error && (
+        <div class="alert alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>{error}</span>
+        </div>
+      )}
+
+      {student && (
+        <div class="space-y-8">
+          <StudentProfile student={student} isEditable={canEdit} />
+          
+          <div class="divider">Additional Information</div>
+          
+          <!-- Student Details -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Personal Information -->
+            <div class="card bg-base-100 shadow-xl">
+              <div class="card-body">
+                <h3 class="card-title">Personal Information</h3>
+                <div class="grid grid-cols-1 gap-4 mt-4">
+                  <div>
+                    <span class="font-medium">Date of Birth:</span>
+                    <p>{student.date_of_birth ? new Date(student.date_of_birth).toLocaleDateString() : "Not provided"}</p>
+                  </div>
+                  <div>
+                    <span class="font-medium">Gender:</span>
+                    <p>{student.gender || "Not provided"}</p>
+                  </div>
+                  <div>
+                    <span class="font-medium">Address:</span>
+                    <p>{student.address || "Not provided"}</p>
+                  </div>
+                  <div>
+                    <span class="font-medium">Phone:</span>
+                    <p>{student.phone || "Not provided"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Emergency Contact -->
+            <div class="card bg-base-100 shadow-xl">
+              <div class="card-body">
+                <h3 class="card-title">Emergency Contact</h3>
+                <div class="grid grid-cols-1 gap-4 mt-4">
+                  <div>
+                    <span class="font-medium">Name:</span>
+                    <p>{student.emergency_contact_name || "Not provided"}</p>
+                  </div>
+                  <div>
+                    <span class="font-medium">Phone:</span>
+                    <p>{student.emergency_contact_phone || "Not provided"}</p>
+                  </div>
+                  <div>
+                    <span class="font-medium">Relationship:</span>
+                    <p>{student.emergency_contact_relationship || "Not provided"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Notes Section -->
+          {student.notes && (
+            <div class="card bg-base-100 shadow-xl">
+              <div class="card-body">
+                <h3 class="card-title">Notes</h3>
+                <p class="whitespace-pre-line">{student.notes}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </main>
+  </AuthWrapper>
+</Layout>

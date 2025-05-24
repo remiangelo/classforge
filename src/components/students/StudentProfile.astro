@@ -1,0 +1,71 @@
+---
+import type { Student } from "../../types/models";
+
+interface Props {
+  student: Student;
+  isEditable?: boolean;
+}
+
+const { student, isEditable = false } = Astro.props;
+---
+
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="flex flex-col md:flex-row gap-6">
+      <!-- Student Profile Image -->
+      <div class="flex-shrink-0">
+        <div class="avatar">
+          <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+            <img
+              src={`https://ui-avatars.com/api/?name=${student.first_name}+${student.last_name}&background=random`}
+              alt={`${student.first_name} ${student.last_name}`}
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Details -->
+      <div class="flex-grow space-y-2">
+        <div class="flex justify-between items-center">
+          <h2 class="card-title text-2xl">
+            {student.first_name} {student.last_name}
+          </h2>
+          <div class="badge badge-lg badge-primary">{student.status || 'active'}</div>
+        </div>
+
+        <div class="text-sm opacity-70">Student ID: <span class="font-medium">{student.student_id || 'N/A'}</span></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+          <div>
+            <div class="font-medium">Grade Level</div>
+            <div>{student.grade_level !== null ? student.grade_level : 'Not assigned'}</div>
+          </div>
+          <div>
+            <div class="font-medium">Enrollment Date</div>
+            <div>{student.enrollment_date ? new Date(student.enrollment_date).toLocaleDateString() : 'Not recorded'}</div>
+          </div>
+          <div>
+            <div class="font-medium">Email</div>
+            <div>{student.email || 'Not provided'}</div>
+          </div>
+          <div>
+            <div class="font-medium">Phone</div>
+            <div>{student.phone || 'Not provided'}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    {isEditable && (
+      <div class="card-actions justify-end mt-4">
+        <a href={`/students/edit/${student.id}`} class="btn btn-primary btn-sm">
+          Edit Profile
+        </a>
+        <a href={`/students/classes/${student.id}`} class="btn btn-secondary btn-sm">
+          Manage Classes
+        </a>
+      </div>
+    )}
+  </div>
+</div>

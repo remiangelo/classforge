@@ -1,19 +1,61 @@
 ---
-// Description: A wrapper component that checks for authentication
-// and redirects to login if not authenticated
+// Description: A wrapper component that checks for authentication and role-based access control
+// Redirects to login if not authenticated or unauthorized
+
+import { getCurrentUserWithProfile } from '../lib/supabase';
+import type { UserRole } from '../types/models';
+
+interface Props {
+  allowedRoles?: UserRole[];
+  redirectTo?: string;
+}
+
+const { allowedRoles = ['admin', 'teacher', 'student', 'parent'], redirectTo = '/login' } = Astro.props;
+
+// Server-side authentication and authorization check
+let isServerAuthorized = false;
+let userRole: UserRole | undefined;
+
+try {
+  // Get the current user with their role
+  const user = await getCurrentUserWithProfile();
+  userRole = user?.role;
+  
+  // Check if the user is authenticated and has an allowed role
+  isServerAuthorized = !!user && (!allowedRoles.length || (userRole && allowedRoles.includes(userRole)));
+  
+  // If not authorized on the server, redirect
+  if (!isServerAuthorized) {
+    return Astro.redirect(redirectTo);
+  }
+} catch (error) {
+  console.error('Server auth check failed:', error);
+  return Astro.redirect(redirectTo);
+}
 ---
 
 <slot />
 
-<script>
-  // Client-side authentication check
+<script define:vars={{ allowedRoles }}>
+  // Client-side authentication and authorization check
   document.addEventListener('astro:page-load', async () => {
     try {
-      const { getCurrentUser } = await import('../lib/supabase');
-      const user = await getCurrentUser();
+      const { getCurrentUserWithProfile } = await import('../lib/supabase');
+      const user = await getCurrentUserWithProfile();
+      
       if (!user) {
         console.warn('No authenticated user found, redirecting to login');
         window.location.href = '/login';
+        return;
+      }
+      
+      // Check role-based access
+      const userRole = user.role;
+      const isAuthorized = !allowedRoles.length || (userRole && allowedRoles.includes(userRole));
+      
+      if (!isAuthorized) {
+        console.warn(`User does not have required role. Required: ${allowedRoles.join(', ')}, Has: ${userRole || 'none'}`);
+        window.location.href = '/unauthorized';
       }
     } catch (error) {
       console.error('Auth check failed:', error);
