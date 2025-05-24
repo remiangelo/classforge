@@ -1,32 +1,59 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
-const announcements = await getCollection('announcements');
+type Announcement = CollectionEntry<'announcements'>;
+
+let announcements: Announcement[] = [];
+
+try {
+  announcements = await getCollection('announcements');
+  // Sort announcements by date in descending order (newest first)
+  announcements.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+} catch (error) {
+  console.error('Error loading announcements:', error);
+}
 ---
 
 <Layout>
-  <main class="flex flex-col items-center justify-center min-h-screen p-4">
-    <h1 class="text-2xl font-bold mb-6">Announcements</h1>
-    <ul class="w-full max-w-2xl space-y-4">
+  <main class="flex flex-col justify-center items-center p-4 min-h-screen">
+    <h1 class="mb-6 text-2xl font-bold">Announcements</h1>
+    <ul class="space-y-4 w-full max-w-2xl">
       {announcements.length === 0 ? (
-        <li class="text-gray-500 text-center">No announcements yet.</li>
+        <li class="text-center text-gray-500">No announcements yet.</li>
       ) : (
-        announcements.map((announcement) => (
-          <li class="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <h2 class="text-xl font-bold text-gray-800">{announcement.data.title}</h2>
-            <p class="text-sm text-gray-500 mt-1">
-              {new Date(announcement.data.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </p>
-            <div class="mt-3 prose prose-sm max-w-none text-gray-700">
-              {@html announcement.body}
-            </div>
-          </li>
-        ))
+        announcements.map((announcement) => {
+          const announcementId = announcement.id;
+          const titleId = `announcement-${announcementId}-title`;
+          const contentId = `announcement-${announcementId}-content`;
+          
+          return (
+            <li 
+              class="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              role="article"
+              aria-labelledby={titleId}
+              data-announcement-id={announcementId}
+            >
+              <h2 id={titleId} class="text-xl font-bold text-gray-800">
+                {announcement.data.title}
+              </h2>
+              <p class="mt-1 text-sm text-gray-500">
+                {new Date(announcement.data.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
+              <div 
+                class="mt-3 prose prose-sm max-w-none text-gray-700"
+                aria-label="Announcement content"
+                id={contentId}
+              >
+                {@html announcement.data.body}
+              </div>
+            </li>
+          );
+        })
       )}
     </ul>
   </main>
